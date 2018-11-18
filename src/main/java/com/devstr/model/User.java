@@ -1,6 +1,7 @@
 package com.devstr.model;
 
 import com.devstr.model.enumerations.UserRole;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
