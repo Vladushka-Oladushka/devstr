@@ -1,15 +1,14 @@
-package com.devstr.model.dao.impl;
+package com.devstr.dao.impl;
 
 import com.devstr.model.User;
-import com.devstr.model.dao.UserDAO;
+import com.devstr.dao.UserDAO;
 import com.devstr.model.enumerations.UserRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
-import java.util.Date;
 
-public class UserDAOimpl implements UserDAO {
+public class UserDAOImpl implements UserDAO {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
     private static final String INSERT_ATTRIBUTE = "INSERT INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE) VALUES(?, ?, ?)";
@@ -27,11 +26,12 @@ public class UserDAOimpl implements UserDAO {
 
     @Override
     public void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole) {
+        throwingNullArgumentException(login, firstName, lastName, email, password, userRole);
         String obSQL = "INSERT INTO OBJECTS(NAME, OBJECT_TYPE_ID) VALUES(?, 1)";
         jdbcTemplate.update(obSQL, login);
         int object_id = jdbcTemplate.queryForObject(SELECT_OBJECT_ID,
                 new Object[]{login}, Integer.class);
-        jdbcTemplate.update(INSERT_ATTRIBUTE, 1, object_id, firstName);;
+        jdbcTemplate.update(INSERT_ATTRIBUTE, 1, object_id, firstName);
         jdbcTemplate.update(INSERT_ATTRIBUTE, 2, object_id, lastName);
         jdbcTemplate.update(INSERT_ATTRIBUTE, 3, object_id, email);
         jdbcTemplate.update("INSERT INTO ATTRIBUTES (ATTRN_ID, OBJECT_ID, DATE_VALUE) VALUES (5, ?, SYSDATE)", object_id);
@@ -72,6 +72,7 @@ public class UserDAOimpl implements UserDAO {
 
     @Override
     public User readUserByLogin(String login) {
+        throwingNullArgumentException(login);
         int userId = jdbcTemplate.queryForObject("SELECT OBJECT_ID FROM OBJECTS WHERE NAME = ?",
                 new Object[]{login}, Integer.class);
         return readUserById(userId);
@@ -79,6 +80,7 @@ public class UserDAOimpl implements UserDAO {
 
     @Override
     public void updateUser(User user) {
+        throwingNullArgumentException(user);
         jdbcTemplate.update(UPDATE_OBJECT,  "NAME", user.getLogin());
         jdbcTemplate.update(UPDATE_ATTRIBUTE, "VALUE", user.getFirstName(), user.getUserId(), 1);
         jdbcTemplate.update(UPDATE_ATTRIBUTE, "VALUE", user.getLastName(), user.getUserId(), 2);
@@ -97,5 +99,13 @@ public class UserDAOimpl implements UserDAO {
     @Override
     public void inactivateUser(User user) {
         jdbcTemplate.update(UPDATE_ATTRIBUTE, "LIST_VALUE_ID", 7, user.getUserId(), 7);
+    }
+
+    private void throwingNullArgumentException(Object ...args) {
+        for (Object o: args) {
+            if (o == null){
+                throw new IllegalArgumentException("Argument cannot be null");
+            }
+        }
     }
 }

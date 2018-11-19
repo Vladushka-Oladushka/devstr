@@ -1,4 +1,4 @@
-package com.devstr.model.dao;
+package com.devstr.dao;
 
 import com.devstr.model.User;
 import com.devstr.model.enumerations.UserRole;
@@ -13,6 +13,7 @@ public interface UserDAO {
      * @param email user's email
      * @param password user's password(encrypted)
      * @param userRole user's role
+     * @throws IllegalArgumentException if one of the params is null
      */
     void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole);
 
@@ -21,6 +22,7 @@ public interface UserDAO {
      *
      * @param id object_id of user in table "Objects" of the DB
      * @return User with certain id
+     * @throws IllegalArgumentException if id <=0 or bigger than size of the objects table
      */
     User readUserById(int id);
 
@@ -29,6 +31,7 @@ public interface UserDAO {
      *
      * @param login login of a user in the system(objects.name attribute in the DB)
      * @return User with certain login
+     * @throws IllegalArgumentException if login is null
      */
     User readUserByLogin(String login);
 
@@ -36,6 +39,7 @@ public interface UserDAO {
      * Update user in the database, when id got no changes
      *
      * @param user updated User instance with the old id
+     * @throws IllegalArgumentException if user is null
      */
     void updateUser(User user);
 
@@ -43,6 +47,7 @@ public interface UserDAO {
      * Sets user into inactive mode
      *
      * @param user User instance that must be deactivated
+     * @throws IllegalArgumentException if user is null
      */
     void inactivateUser(User user);
 }
