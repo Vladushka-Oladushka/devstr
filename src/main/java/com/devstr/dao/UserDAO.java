@@ -3,6 +3,8 @@ package com.devstr.dao;
 import com.devstr.model.User;
 import com.devstr.model.enumerations.UserRole;
 
+import java.math.BigInteger;
+
 public interface UserDAO {
     /**
      * Method writes User to database
@@ -24,7 +26,7 @@ public interface UserDAO {
      * @return User with certain id
      * @throws IllegalArgumentException if id <=0 or bigger than size of the objects table
      */
-    User readUserById(int id);
+    User readUserById(BigInteger id);
 
     /**
      * Get user with a certain login from the DB

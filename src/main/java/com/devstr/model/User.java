@@ -2,13 +2,14 @@ package com.devstr.model;
 
 import com.devstr.model.enumerations.UserRole;
 
-import java.time.LocalDate;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class User {
 
-    private int userId;
+    private BigInteger userId;
     private String login;
     private String firstName;
     private String lastName;
@@ -17,13 +18,13 @@ public class User {
     private String email;
     private UserRole role;
     private int projectId;
-    private LocalDate hireDate;
+    private Date hireDate;
     private boolean status;
 
     private User() {
     }
 
-    public int getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -59,7 +60,7 @@ public class User {
         return projectId;
     }
 
-    public LocalDate getHireDate() {
+    public Date getHireDate() {
         return hireDate;
     }
 
@@ -84,7 +85,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = userId;
+        int result = userId.intValue();
         result = 31 * result + login.hashCode();
         return result;
     }
@@ -94,7 +95,7 @@ public class User {
         private UserBuilder() {
         }
 
-        public UserBuilder setUserId(int userId) {
+        public UserBuilder setUserId(BigInteger userId) {
             User.this.userId = userId;
             return this;
         }
@@ -150,7 +151,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setHireDate(LocalDate hireDate) {
+        public UserBuilder setHireDate(Date hireDate) {
             User.this.hireDate = hireDate;
             return this;
         }

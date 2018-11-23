@@ -6,7 +6,8 @@ import com.devstr.model.enumerations.UserRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.time.LocalDate;
+import java.math.BigInteger;
+import java.util.Date;
 
 public class UserDAOImpl implements UserDAO {
     private DataSource dataSource;
@@ -44,11 +45,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User readUserById(int id) {
-        if (id <= 0) {
+    public User readUserById(BigInteger id) {
+        if (id.intValue() <= 0) {
             throw new IllegalArgumentException("ID cannot be 0 or less");
         }
-        if (id > jdbcTemplate.getMaxRows()){
+        if (id.intValue() > jdbcTemplate.getMaxRows()){
             throw new IllegalArgumentException("ID is bigger than size of the table");
         }
         User.UserBuilder result = User.builder();
@@ -65,7 +66,7 @@ public class UserDAOImpl implements UserDAO {
                 new Object[]{userRoleId}, String.class);
         result.setRole(UserRole.valueOf(userRole));
         result.setHireDate(jdbcTemplate.queryForObject("SELECT DATE_VALUE FROM ATTRIBUTES" +
-                " WHERE OBJECT_ID=? AND ATTRN_ID=?", new Object[]{id, 5}, LocalDate.class));
+                " WHERE OBJECT_ID=? AND ATTRN_ID=?", new Object[]{id, 5}, Date.class));
         result.setStatus(jdbcTemplate.queryForObject(SELECT_ATTRIBUTE, new Object[]{id, 7}, Boolean.class));
         return result.build();
     }
@@ -73,8 +74,8 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User readUserByLogin(String login) {
         throwingNullArgumentException(login);
-        int userId = jdbcTemplate.queryForObject("SELECT OBJECT_ID FROM OBJECTS WHERE NAME = ?",
-                new Object[]{login}, Integer.class);
+        BigInteger userId = jdbcTemplate.queryForObject("SELECT OBJECT_ID FROM OBJECTS WHERE NAME = ?",
+                new Object[]{login}, BigInteger.class);
         return readUserById(userId);
     }
 
